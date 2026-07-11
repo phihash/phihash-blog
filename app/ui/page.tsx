@@ -20,21 +20,24 @@ export default function UIPage() {
       すぐ使いたい → shadcn/ui（動き＋見た目セット）✅ おすすめ
       <br />
       npx shadcn@latest init | npx shadcn@latest add tabs
-      <h2>Tabsでも</h2>
-      <Tabs>
-        <TabsList>
-          <TabsTrigger value="tab1">タブ1</TabsTrigger>
-          <TabsTrigger value="tab2">タブ2</TabsTrigger>
-          <TabsTrigger value="tab3">タブ3</TabsTrigger>
+      <h2 className="mt-8 mb-4 text-xl font-bold">Tabs デモ</h2>
+      <Tabs defaultValue="tab1" className="w-full max-w-lg">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="tab1">概要</TabsTrigger>
+          <TabsTrigger value="tab2">詳細</TabsTrigger>
+          <TabsTrigger value="tab3">設定</TabsTrigger>
         </TabsList>
-        <TabsContent value="tab1">
-          タブ1の内容です。ここに好きなコンテンツを入れられます。
+        <TabsContent value="tab1" className="mt-4 rounded-lg border p-4">
+          <h3 className="mb-2 font-semibold">概要</h3>
+          <p className="text-sm text-muted-foreground">shadcn/ui の Tabs コンポーネントです。Radix UI ベースでアクセシビリティ対応済み。</p>
         </TabsContent>
-        <TabsContent value="tab2">
-          タブ2の内容です。ここに好きなコンテンツを入れられます。
+        <TabsContent value="tab2" className="mt-4 rounded-lg border p-4">
+          <h3 className="mb-2 font-semibold">詳細</h3>
+          <p className="text-sm text-muted-foreground">className に Tailwind のクラスを渡すだけでスタイルを変更できます。</p>
         </TabsContent>
-        <TabsContent value="tab3">
-          タブ3の内容です。ここに好きなコンテンツを入れられます。
+        <TabsContent value="tab3" className="mt-4 rounded-lg border p-4">
+          <h3 className="mb-2 font-semibold">設定</h3>
+          <p className="text-sm text-muted-foreground">components/ui/tabs.tsx を直接編集してデフォルトスタイルも変更可能です。</p>
         </TabsContent>
       </Tabs>
     </>
