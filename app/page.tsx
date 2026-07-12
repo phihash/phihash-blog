@@ -10,11 +10,70 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+      一般的
+      <Tabs defaultValue="tab21" className="w-full max-w-lg">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="tab21">概要</TabsTrigger>
+          <TabsTrigger value="tab31">実例</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="tab21" className="mt-4 rounded-lg border p-4">
+          <h3 className="mb-2 font-semibold">概要</h3>
+          <p className="text-sm">階層と構造</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Webサイトやアプリケーションは立体的な構造として成り立っている。ページの前後関係を無視してサービスをデザインすることはできない。
+            <br />
+            例1） Appleの場合、グローバルナビゲーション ＞
+            ローカルナビゲーション と移動する。
+            <br />
+            その後、ローカルナビゲーションの見出しはタイトルに変化し、新たな動線も出現する。
+            <br />
+            例2） ケンブリッジ大学の場合
+            グローバルナビゲーションは、現在のいる場所と、その下層をしめす。
+            下層をクリックすると、先ほどいた場所が繰り上がり、表示される。
+            <br />
+            例3） iOSは1つ前のタイトルが戻るボタンの見出しとなる
+            <br />
+            人間はある状態から別の状態に変化する時、段階的に変化していくことを自然に感じる
+            <br />
+            画面の前後関係の理解を補助するためにインタラクションが有効である。
+            例）
+          </p>
+          <p className="text-sm mt-3">深さと広さ</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            階層には深さと広さがある。基本的に反比例する。
+            <br />
+            一般的に、ユーザーは浅く広くの方が探しやすい。なぜなら、階層を上下する方が労力を伴うから。
+            また階層が広い方が、ラベリングは排他的で具体的に命名しやすくなる。
+            <br />
+            ラベリングで重要なポイントは、<b>排他的</b>
+            に命名すること。なぜなら、ユーザーを困惑させることになり認知負荷を向上させてしまうため。
+            <br />
+            階層が狭いと、すっきりとさせることはできるが、ラベリングはわかりにくくなる。
+            <br />
+            フォローアップとして、各メニューをクリックホバーすると、そのメニューの説明や概要などが表示されることがある。
+            <br />
+            階層が広いもののデメリットとして、カテゴリ数が多く、構造的にわかりにくさを冗長してしまう。
+            あと、見た目の判断というか認知負荷はあるかも
+            <br />
+            スマホアプリにおいて、5タブ構成がよく見られるが、主要な機能以外はある1つにまとめられ、結果として抽象的ラベリングしていることに変わりないものがある。
+            対策としたは、サブメニュー、ハンバーガーメニューなどでカテゴリ数をさらに設置する。
+          </p>
+          <p className="text-sm mt-3">現在地表記</p>
+        </TabsContent>
+        <TabsContent value="tab31" className="mt-4 rounded-lg border p-4">
+          <h3 className="mb-2 font-semibold">設定</h3>
+          <p className="text-sm text-muted-foreground">
+            components/ui/tabs.tsx
+            を直接編集してデフォルトスタイルも変更可能です。
+          </p>
+        </TabsContent>
+      </Tabs>
       カラー
       <Tabs defaultValue="tab1" className="w-full max-w-lg">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="tab1">チェックリスト</TabsTrigger>
-          <TabsTrigger value="tab2">こころがまえ</TabsTrigger>
+          <TabsTrigger value="tab2">概要</TabsTrigger>
           <TabsTrigger value="tab3">実例</TabsTrigger>
         </TabsList>
         <TabsContent value="tab1" className="mt-4 rounded-lg border p-4">
