@@ -9,9 +9,58 @@ export default async function Home() {
   });
 
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+    <div className="flex flex-col flex-1 items-center justify-center font-sans w-full md:w-4/5 mx-auto">
+      <article className="w-full max-w-lg md:max-w-none pt-6 px-4 md:px-0">
+        <h2 className="text-2xl font-bold mb-6 pb-2 border-b">
+          UIデザインの基礎
+        </h2>
+        <section className="mb-8">
+          <h2 className="text-xl font-bold mb-3">デザインの目的</h2>
+          <p className="text-base leading-7 text-muted-foreground">
+            デザインとは「設計」である。
+          </p>
+          <p className="text-base leading-7 text-muted-foreground mt-3">
+            よくある誤解として、「デザインは絵である」「デザインとアートは同じである」というものがある。
+            しかし、デザインは見た目の話だけでなく、その機能や働きによって課題を解決することである。
+          </p>
+          <p className="text-base leading-7 text-muted-foreground mt-3">
+            デザインの原則は特定の領域に限らず広く適用できるため、ソフトウェアの差別化要因としてデザインは重要である。
+          </p>
+        </section>
+
+        <section className="mb-8">
+          <h2 className="text-xl font-bold mb-3">UI・UXとは</h2>
+          <p className="text-base leading-7 text-muted-foreground">
+            UIとはユーザーとサービスの接点のことである。
+            人が物理的に制御できるように、リモコン、マウス、タッチパネルなどのインターフェースが必要である。
+          </p>
+          <p className="text-base leading-7 text-muted-foreground mt-3">
+            UXとは広義的には、ユーザーがサービスを知った瞬間からのすべての体験を指す。
+            UXの概念の発案者であるドナルド・ノーマンは、「UXは企業やサービスや製品について、ユーザーのやり取りのすべてを網羅するもの」と述べている。
+          </p>
+          <p className="text-base leading-7 text-muted-foreground mt-3">
+            UIは目に見える客観的なもの、UXは主観的なものである。
+            UXの設計手法としてカスタマージャーニーマップがある。
+          </p>
+          <p className="text-base leading-7 text-muted-foreground mt-3">
+            UI単体を改善してもUXを根本的に改善できない。
+            UXとは、対象に関わり始めてから忘れられるまでのすべての体験とされる。広告、セールス、サポートなど、UXに影響する要素は多岐にわたり、ユーザーの内面までを含めた概念である。
+          </p>
+        </section>
+        <h2 className="text-2xl font-bold mb-6 pb-2 border-b">
+          デバイスについて
+        </h2>
+
+        <section className="mb-8">
+          <h2 className="text-xl font-bold mb-3">入力手段の違い</h2>
+          <p className="text-base leading-7 text-muted-foreground">
+            本書は「PC」「スマートフォン」「タブレット」「TV」の4つのデバイスを対象としている。
+            デバイスによって用途や使われる場が異なるため、最適なインターフェースも異なる。
+          </p>
+        </section>
+      </article>
       一般的
-      <Tabs defaultValue="tab21" className="w-full max-w-lg">
+      <Tabs defaultValue="tab21" className="w-full max-w-lg md:max-w-none">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="tab21">概要</TabsTrigger>
           <TabsTrigger value="tab31">実例</TabsTrigger>
@@ -64,13 +113,13 @@ export default async function Home() {
         <TabsContent value="tab31" className="mt-4 rounded-lg border p-4">
           <h3 className="mb-2 font-semibold">設定</h3>
           <p className="text-sm text-muted-foreground">
-            components/ui/tabs.tsx
+            npx shadcn init を実行でカラーファイルできる components/ui/tabs.tsx
             を直接編集してデフォルトスタイルも変更可能です。
           </p>
         </TabsContent>
       </Tabs>
       カラー
-      <Tabs defaultValue="tab1" className="w-full max-w-lg">
+      <Tabs defaultValue="tab1" className="w-full max-w-lg md:max-w-none">
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="tab1">チェックリスト</TabsTrigger>
           <TabsTrigger value="tab2">概要</TabsTrigger>
