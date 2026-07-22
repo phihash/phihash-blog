@@ -30,11 +30,12 @@ export default function Home() {
                 </span>
               </div>
               <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground line-clamp-2">
-                {topic.overview[0]}
+                {lead}
               </p>
             </Link>
           </li>
-        ))}
+          );
+        })}
       </ul>
     </main>
   );
