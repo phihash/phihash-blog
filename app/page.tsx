@@ -12,7 +12,10 @@ export default function Home() {
       </p>
 
       <ul className="grid gap-3 sm:grid-cols-2">
-        {topics.map((topic) => (
+        {topics.map((topic) => {
+          // 概要の最初の段落（文字列ブロック）をカードの説明に使う
+          const lead = topic.overview.find((b) => typeof b === "string");
+          return (
           <li key={topic.id}>
             <Link
               href={`/checklist/${topic.id}`}
