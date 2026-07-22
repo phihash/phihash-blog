@@ -4,23 +4,54 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
-import { topics, type Example, type ChecklistItem } from "../content";
+import {
+  topics,
+  type Example,
+  type ChecklistItem,
+  type OverviewBlock,
+} from "../content";
 
 export function generateStaticParams() {
   return topics.map((t) => ({ id: t.id }));
 }
 
-function Overview({ paragraphs }: { paragraphs: string[] }) {
+function Overview({ blocks }: { blocks: OverviewBlock[] }) {
   return (
     <div className="max-w-prose">
-      {paragraphs.map((para, i) => (
-        <p
-          key={i}
-          className="text-[15px] leading-[1.9] tracking-[0.01em] text-foreground/80 [&:not(:first-child)]:mt-5 [text-wrap:pretty]"
-        >
-          {para}
-        </p>
-      ))}
+      {blocks.map((block, i) => {
+        if (typeof block === "string") {
+          return (
+            <p
+              key={i}
+              className="text-[15px] leading-[1.9] tracking-[0.01em] text-foreground/80 [&:not(:first-child)]:mt-5 [text-wrap:pretty]"
+            >
+              {block}
+            </p>
+          );
+        }
+        if ("heading" in block) {
+          return (
+            <h2
+              key={i}
+              className="mt-9 mb-4 border-b pb-2 text-lg font-bold tracking-tight first:mt-0"
+            >
+              {block.heading}
+            </h2>
+          );
+        }
+        // term / text（対比・定義）
+        return (
+          <div
+            key={i}
+            className="mt-5 rounded-lg border-l-2 border-foreground/15 pl-4"
+          >
+            <p className="text-sm font-semibold tracking-tight">{block.term}</p>
+            <p className="mt-1.5 text-[15px] leading-[1.9] tracking-[0.01em] text-foreground/80 [text-wrap:pretty]">
+              {block.text}
+            </p>
+          </div>
+        );
+      })}
     </div>
   );
 }
