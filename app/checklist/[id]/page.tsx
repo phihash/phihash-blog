@@ -1,13 +1,86 @@
+import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
-import { topics } from "../content";
+import { topics, type Example, type ChecklistItem } from "../content";
 
 export function generateStaticParams() {
   return topics.map((t) => ({ id: t.id }));
 }
+
+function Overview({ paragraphs }: { paragraphs: string[] }) {
+  return (
+    <div className="max-w-prose">
+      {paragraphs.map((para, i) => (
+        <p
+          key={i}
+          className="text-[15px] leading-[1.9] tracking-[0.01em] text-foreground/80 [&:not(:first-child)]:mt-5 [text-wrap:pretty]"
+        >
+          {para}
+        </p>
+      ))}
+    </div>
+  );
+}
+
+function Examples({ examples }: { examples: Example[] }) {
+  return (
+    <div className="flex flex-col gap-8">
+      {examples.map((ex, i) => (
+        <figure key={i}>
+          {ex.image ? (
+            <Image
+              src={ex.image}
+              alt={ex.caption}
+              width={800}
+              height={480}
+              className="rounded-lg border w-full h-auto"
+            />
+          ) : (
+            <div className="flex h-44 items-center justify-center rounded-lg border border-dashed text-xs text-muted-foreground">
+              スクショ未登録
+            </div>
+          )}
+          <figcaption className="mt-3 text-[13px] leading-relaxed text-muted-foreground">
+            {ex.caption}
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  );
+}
+
+function Checklist({ items }: { items: ChecklistItem[] }) {
+  return (
+    <ul className="flex flex-col">
+      {items.map((item, i) => (
+        <li
+          key={item.id}
+          className={`flex gap-3 py-4 ${i > 0 ? "border-t" : ""}`}
+        >
+          <Checkbox id={item.id} className="mt-0.5" />
+          <div className="flex flex-col gap-1">
+            <label
+              htmlFor={item.id}
+              className="text-[15px] font-medium leading-snug"
+            >
+              {item.label}
+            </label>
+            {item.hint && (
+              <span className="text-[13px] leading-relaxed text-muted-foreground">
+                {item.hint}
+              </span>
+            )}
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+type Tab = { value: string; label: string; node: ReactNode };
 
 export default async function TopicPage({
   params,
@@ -18,99 +91,65 @@ export default async function TopicPage({
   const topic = topics.find((t) => t.id === id);
   if (!topic) notFound();
 
-  // 中身のあるタブだけ出す（概要だけの読み物トピックにも対応）
-  const tabs = [
-    { value: "overview", label: "概要", show: topic.overview.length > 0 },
-    { value: "examples", label: "実例", show: !!topic.examples?.length },
-    { value: "checklist", label: "チェックリスト", show: !!topic.checklist?.length },
-  ].filter((t) => t.show);
+  // 中身のあるタブだけ組み立てる（概要だけの読み物トピックにも対応）
+  const tabs: Tab[] = [];
+  if (topic.overview.length)
+    tabs.push({
+      value: "overview",
+      label: "概要",
+      node: <Overview paragraphs={topic.overview} />,
+    });
+  if (topic.examples?.length)
+    tabs.push({
+      value: "examples",
+      label: "実例",
+      node: <Examples examples={topic.examples} />,
+    });
+  if (topic.checklist?.length)
+    tabs.push({
+      value: "checklist",
+      label: "チェックリスト",
+      node: <Checklist items={topic.checklist} />,
+    });
 
   return (
-    <main className="flex flex-col flex-1 w-full md:w-3/5 mx-auto px-4 md:px-0 py-8">
+    <main className="flex flex-col flex-1 w-full max-w-2xl mx-auto px-5 md:px-0 py-10">
       <Link
         href="/"
-        className="text-sm text-muted-foreground hover:underline mb-4"
+        className="text-[13px] text-muted-foreground hover:text-foreground transition-colors mb-6"
       >
         ← 一覧へ
       </Link>
-      <h1 className="text-2xl font-bold mb-6">{topic.title}</h1>
+      <h1 className="text-[28px] font-bold tracking-tight leading-tight mb-1">
+        {topic.title}
+      </h1>
 
-      <Tabs defaultValue={tabs[0].value} className="w-full">
-        <TabsList
-          className="grid w-full"
-          style={{
-            gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))`,
-          }}
-        >
+      {tabs.length <= 1 ? (
+        // タブが1つ（＝読み物）ならタブUIを出さず本文だけ
+        <div className="mt-6">{tabs[0]?.node}</div>
+      ) : (
+        <Tabs defaultValue={tabs[0].value} className="mt-6 w-full">
+          <TabsList
+            variant="line"
+            className="w-full justify-start gap-6 p-0"
+          >
+            {tabs.map((t) => (
+              <TabsTrigger
+                key={t.value}
+                value={t.value}
+                className="flex-none rounded-none border-0 px-0 pb-2.5 text-[13px] text-foreground/50 data-active:text-foreground"
+              >
+                {t.label}
+              </TabsTrigger>
+            ))}
+          </TabsList>
           {tabs.map((t) => (
-            <TabsTrigger key={t.value} value={t.value}>
-              {t.label}
-            </TabsTrigger>
+            <TabsContent key={t.value} value={t.value} className="pt-6">
+              {t.node}
+            </TabsContent>
           ))}
-        </TabsList>
-
-        {/* 概要 */}
-        <TabsContent value="overview" className="mt-4 rounded-lg border p-4">
-          {topic.overview.map((para, i) => (
-            <p
-              key={i}
-              className="text-sm leading-7 text-muted-foreground [&:not(:first-child)]:mt-3"
-            >
-              {para}
-            </p>
-          ))}
-        </TabsContent>
-
-        {/* 実例 */}
-        <TabsContent value="examples" className="mt-4 rounded-lg border p-4">
-          <div className="flex flex-col gap-6">
-            {topic.examples?.map((ex, i) => (
-              <figure key={i}>
-                {ex.image ? (
-                  <Image
-                    src={ex.image}
-                    alt={ex.caption}
-                    width={800}
-                    height={480}
-                    className="rounded-md border w-full h-auto"
-                  />
-                ) : (
-                  <div className="flex h-40 items-center justify-center rounded-md border border-dashed text-xs text-muted-foreground">
-                    スクショ未登録
-                  </div>
-                )}
-                <figcaption className="mt-2 text-sm text-muted-foreground">
-                  {ex.caption}
-                </figcaption>
-              </figure>
-            ))}
-          </div>
-        </TabsContent>
-
-        {/* チェックリスト */}
-        <TabsContent value="checklist" className="mt-4 rounded-lg border p-4">
-          <ul className="flex flex-col gap-4">
-            {topic.checklist?.map((item) => (
-              <li key={item.id} className="flex gap-3">
-                <Checkbox id={item.id} className="mt-1" />
-                <div className="flex flex-col">
-                  <label
-                    htmlFor={item.id}
-                    className="text-sm font-medium leading-snug"
-                  >
-                    {item.label}
-                  </label>
-                  {item.hint && (
-                    <span className="mt-1 text-xs text-muted-foreground">
-                      {item.hint}
-                    </span>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
-        </TabsContent>
-      </Tabs>
+        </Tabs>
+      )}
     </main>
   );
 }
