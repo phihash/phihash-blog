@@ -128,7 +128,7 @@ export default async function TopicPage({
     tabs.push({
       value: "overview",
       label: "概要",
-      node: <Overview paragraphs={topic.overview} />,
+      node: <Overview blocks={topic.overview} />,
     });
   if (topic.examples?.length)
     tabs.push({
