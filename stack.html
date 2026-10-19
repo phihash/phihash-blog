@@ -6,12 +6,49 @@
     <title>道具箱 - phihash</title>
     <style>
       body {
-        max-width: 40rem;
+        max-width: 72rem;
         margin: 0 auto;
         padding: 3rem 1.25rem;
         font-family: system-ui, sans-serif;
         line-height: 1.7;
         color-scheme: light dark;
+        background: light-dark(#fafaf9, #111);
+      }
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+        gap: 1.25rem;
+        padding: 0;
+        list-style: none;
+      }
+      .card {
+        display: block;
+        height: 100%;
+        overflow: hidden;
+        border: 1px solid light-dark(#e7e5e4, #2a2a2a);
+        border-radius: 1rem;
+        background: light-dark(#fff, #1a1a1a);
+        color: inherit;
+        text-decoration: none;
+      }
+      .thumb {
+        display: grid;
+        place-items: center;
+        aspect-ratio: 2 / 1;
+        background: light-dark(#f0eeec, #242424);
+        font-size: 3.5rem;
+      }
+      .body {
+        padding: 1rem 1.25rem 1.25rem;
+      }
+      .body h4 {
+        margin: 0 0 0.25rem;
+        font-size: 1rem;
+      }
+      .body p {
+        margin: 0;
+        font-size: 0.875rem;
+        color: light-dark(#78716c, #a8a29e);
       }
     </style>
   </head>
@@ -33,14 +70,415 @@
     </ul>
 
     <h2>スキル</h2>
-    <ul>
+
+    <h3>anthropics/skills</h3>
+    <ul class="cards">
       <li>
-        <a href="https://github.com/phuryn/pm-skills">pm-skills</a> —
-        プロダクトマネジメント用のスキル集。ディスカバリー、戦略、PRD作成、ローンチ計画などのPMフレームワークを、Claude Code で手順どおりに進められる。
+        <a class="card" href="https://github.com/anthropics/skills/tree/main/skills/skill-creator">
+          <div class="thumb">🛠️</div>
+          <div class="body">
+            <h4>skill-creator</h4>
+            <p>スキルを新しく作ったり、既存のスキルを直したりする。テストを走らせて性能を測り、呼び出されやすいように説明文も調整する。</p>
+          </div>
+        </a>
       </li>
       <li>
-        <a href="https://github.com/mattpocock/skills/blob/main/skills/productivity/grill-me/SKILL.md">grill-me</a> —
-        ざっくりしたアイデアを、エージェントが質問攻めにして詰めてくれるスキル。<code>/grill-me</code> で呼び出す。
+        <a class="card" href="https://github.com/anthropics/skills/tree/main/skills/docx">
+          <div class="thumb">📘</div>
+          <div class="body">
+            <h4>docx</h4>
+            <p>Word 文書（.docx）を作成・読み取り・編集する。目次やページ番号の入った文書の作成、変更履歴やコメントの扱い、画像の差し替えなどに使う。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/anthropics/skills/tree/main/skills/pdf">
+          <div class="thumb">📄</div>
+          <div class="body">
+            <h4>pdf</h4>
+            <p>PDF の作業全般を行う。テキストや表の抜き出し、結合と分割、フォームの入力、透かしの追加、スキャンした PDF の文字認識（OCR）などに使う。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/anthropics/skills/tree/main/skills/pptx">
+          <div class="thumb">📽️</div>
+          <div class="body">
+            <h4>pptx</h4>
+            <p>PowerPoint（.pptx）のスライドを作成・読み取り・編集する。新しい資料作り、既存スライドの修正、テンプレートやスピーカーノートの扱いに使う。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/anthropics/skills/tree/main/skills/xlsx">
+          <div class="thumb">📈</div>
+          <div class="body">
+            <h4>xlsx</h4>
+            <p>Excel などの表計算ファイル（.xlsx、.csv など）を開いて編集したり、新しく作ったりする。数式、書式、グラフ、崩れた表データの整理に使う。</p>
+          </div>
+        </a>
+      </li>
+    </ul>
+
+    <h3>mattpocock/skills</h3>
+    <ul class="cards">
+      <li>
+        <a class="card" href="https://github.com/mattpocock/skills/blob/main/skills/productivity/grill-me/SKILL.md">
+          <div class="thumb">🔥</div>
+          <div class="body">
+            <h4>grill-me</h4>
+            <p>ざっくりしたアイデアを、エージェントが質問攻めにして詰めてくれるスキル。<code>/grill-me</code> で呼び出す。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/mattpocock/skills/tree/main/skills/productivity/grilling">
+          <div class="thumb">❓</div>
+          <div class="body">
+            <h4>grilling</h4>
+            <p>計画やアイデアについてエージェントが質問を重ね、考えの甘い所を洗い出す。grill-me から呼ばれる、質問攻めの本体。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/mattpocock/skills/tree/main/skills/engineering/grill-with-docs">
+          <div class="thumb">📚</div>
+          <div class="body">
+            <h4>grill-with-docs</h4>
+            <p>grill-me と同じ質問攻めをしながら、決めたことを ADR（設計判断の記録）と用語集に書き残す。コードを読んで、内容をコードベースに合わせる。</p>
+          </div>
+        </a>
+      </li>
+    </ul>
+
+    <h3>keitakn/engineering-skills</h3>
+    <ul class="cards">
+      <li>
+        <a class="card" href="https://github.com/keitakn/engineering-skills/blob/main/.claude/skills/explain-visually/SKILL.md">
+          <div class="thumb">🖼️</div>
+          <div class="body">
+            <h4>explain-visually</h4>
+            <p>長い設計文書や PR、Issue を読み解き、図と短い文で説明する HTML を作ってブラウザで開く。気になる項目を指定すると、そこだけを掘り下げたページも作る。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/keitakn/engineering-skills/blob/main/.claude/skills/code-comments/SKILL.md">
+          <div class="thumb">💬</div>
+          <div class="body">
+            <h4>code-comments</h4>
+            <p>コード、テスト、コミットログ、コードコメントのどこに何を書くかを決める。コードには How、テストには What、コミットログには Why、コメントには Why not を書き分ける。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/keitakn/engineering-skills/blob/main/.claude/skills/code-naming/SKILL.md">
+          <div class="thumb">🏷️</div>
+          <div class="body">
+            <h4>code-naming</h4>
+            <p>変数や関数、クラスなどに名前を付けるときに使う。get を使いすぎず、何をして値を得るのかが名前から分かるようにする。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/keitakn/engineering-skills/blob/main/.claude/skills/codex-plan-review-loop/SKILL.md">
+          <div class="thumb">🔁</div>
+          <div class="body">
+            <h4>codex-plan-review-loop</h4>
+            <p>実装計画を Codex CLI にレビューさせ、指摘を仕分けて計画を直し、またレビューさせる流れを繰り返す。実装計画と要件のファイルを渡して使う。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/keitakn/engineering-skills/blob/main/.claude/skills/codex-pr-review-loop/SKILL.md">
+          <div class="thumb">🔄</div>
+          <div class="body">
+            <h4>codex-pr-review-loop</h4>
+            <p>GitHub の PR を Codex CLI にレビューさせ、指摘を仕分けてコードを直し、またレビューさせる流れを繰り返す。PR にリンクされた Issue なども必ず読んで確かめる。</p>
+          </div>
+        </a>
+      </li>
+    </ul>
+
+    <h3>TAKT</h3>
+    <ul class="cards">
+      <li>
+        <a class="card" href="https://github.com/j5ik2o/ai-tools/tree/main/plugins/takt/skills/j5ik2o-takt-workflow-builder">
+          <div class="thumb">🏗️</div>
+          <div class="body">
+            <h4>j5ik2o-takt-workflow-builder</h4>
+            <p>要件を聞き取って、TAKT のワークフロー（YAML）を作成・カスタマイズする。ステップの構成とルールを決め、必要なファセットのファイルもまとめて作る。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/j5ik2o/ai-tools/tree/main/plugins/takt/skills/j5ik2o-takt-analyzer">
+          <div class="thumb">🔍</div>
+          <div class="body">
+            <h4>j5ik2o-takt-analyzer</h4>
+            <p>TAKT（AI コーディングエージェントの作業の流れを YAML で決める CLI）のワークフローとファセット（各ステップでエージェントに渡す役割や指示のファイル）を分析して改善点を出す。実行ログがあればログからも診断する。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/j5ik2o/ai-tools/tree/main/plugins/takt/skills/j5ik2o-takt-facet-builder">
+          <div class="thumb">🧩</div>
+          <div class="body">
+            <h4>j5ik2o-takt-facet-builder</h4>
+            <p>各ステップでエージェントに渡すファセットを1つずつ作成・編集する。役割（ペルソナ）、ポリシー、指示（インストラクション）、知識（ナレッジ）、出力の形式（出力契約）の5種類がある。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/j5ik2o/ai-tools/tree/main/plugins/takt/skills/j5ik2o-takt-optimizer">
+          <div class="thumb">⚡</div>
+          <div class="body">
+            <h4>j5ik2o-takt-optimizer</h4>
+            <p>TAKT のワークフローを最適化する。トークンの削減、ステップの統合、並列化などを行い、修正後のファイルを直接作る。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/j5ik2o/ai-tools/tree/main/plugins/takt/skills/j5ik2o-takt-task-builder">
+          <div class="thumb">📋</div>
+          <div class="body">
+            <h4>j5ik2o-takt-task-builder</h4>
+            <p>TAKT に実行させるタスクを登録する。タスクの一覧（tasks.yaml）のエントリと、タスクごとの仕様書（order.md）を作成・編集する。</p>
+          </div>
+        </a>
+      </li>
+    </ul>
+
+    <h3>mizchi/skills</h3>
+    <ul class="cards">
+      <li>
+        <a class="card" href="https://github.com/mizchi/skills/blob/main/empirical-prompt-tuning/SKILL.md">
+          <div class="thumb">🧪</div>
+          <div class="body">
+            <h4>empirical-prompt-tuning</h4>
+            <p>スキルや CLAUDE.md など、エージェント向けの指示を改善する。別のエージェントに実際に実行させて評価し、少しずつ直していく。名前を指定して呼んだときだけ動く。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/mizchi/skills/tree/main/ast-grep-practice">
+          <div class="thumb">🔎</div>
+          <div class="body">
+            <h4>ast-grep-practice</h4>
+            <p>コードの構文で検索・置換する ast-grep を、プロジェクトの lint として使う。一般的な linter では書けないルールを作るときに使い、設定、自動修正、テスト、CI まで扱う。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/mizchi/skills/tree/main/chezmoi-management">
+          <div class="thumb">🏠</div>
+          <div class="body">
+            <h4>chezmoi-management</h4>
+            <p>chezmoi で管理している mizchi さん本人の dotfiles を扱う。差分の確認と反映、スキルの追加、新しいマシンの初期設定などに使う。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/mizchi/skills/tree/main/formal-methods-reconciler">
+          <div class="thumb">📐</div>
+          <div class="body">
+            <h4>formal-methods-reconciler</h4>
+            <p>仕様、ドキュメント、テスト、コードの食い違いを形式手法で突き合わせる。Z3 や TLA+ などから合う検証ツールを選んで小さなモデルを作り、結果を開発者向けの問いや回帰テストに直す。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/mizchi/skills/tree/main/frontend-review-weekly">
+          <div class="thumb">📅</div>
+          <div class="body">
+            <h4>frontend-review-weekly</h4>
+            <p>週1回のフロントエンドの AI レビューをまとめて回す。5つの観点のレビューを並列で実行し、先週の指標と比べた週次レポートを作る。ほかの frontend-review-* スキルと組み合わせて使う。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/mizchi/skills/tree/main/multi-agent-orchestration">
+          <div class="thumb">🕸️</div>
+          <div class="body">
+            <h4>multi-agent-orchestration</h4>
+            <p>サブエージェントを使うべきか、使うなら順番に回すか並列に広げるかを決める。エージェントを増やしてもトークンの無駄になる場面を見分けるのにも使う。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/mizchi/skills/tree/main/playwright-test">
+          <div class="thumb">🎭</div>
+          <div class="body">
+            <h4>playwright-test</h4>
+            <p>Playwright の E2E テストの書き方と CI 設定のベストプラクティス集。固定の待ち時間を避ける方法、ドラッグ＆ドロップ、GitHub Actions での分割実行やリトライなどを扱う。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/mizchi/skills/tree/main/retrospective-codify">
+          <div class="thumb">📌</div>
+          <div class="body">
+            <h4>retrospective-codify</h4>
+            <p>試行錯誤の末に解決した問題から「最初に知っていればよかったこと」を取り出し、ast-grep のルール、スキル、CLAUDE.md のルールとして残す。頼んだときだけ動く。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/mizchi/skills/tree/main/skill-finder">
+          <div class="thumb">🧭</div>
+          <div class="body">
+            <h4>skill-finder</h4>
+            <p>手持ちのカタログにないスキルを、公式や有名なスキル集から探して評価する。採用する前に waxa-eval で品質を確かめる。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/mizchi/skills/tree/main/skill-selector">
+          <div class="thumb">🗂️</div>
+          <div class="body">
+            <h4>skill-selector</h4>
+            <p>プロジェクトに必要なスキルを選んで apm.yml に設定する。まず厳選したカタログから選び、合うものがなければ外を探す。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/mizchi/skills/tree/main/stryker-js">
+          <div class="thumb">🧬</div>
+          <div class="body">
+            <h4>stryker-js</h4>
+            <p>JavaScript/TypeScript のテストの質を、ミューテーションテストツールの StrykerJS で測る。コードを書き換えても落ちないテストを見つけ、足りないケースや弱いアサーションを探す。AI が書いたテストにも使える。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/mizchi/skills/tree/main/vlmkit">
+          <div class="thumb">👁️</div>
+          <div class="body">
+            <h4>vlmkit</h4>
+            <p>画像を読める AI（VLM）でフロントエンドの見た目を確かめるツールキットの入口。HTML/CSS を変えたあとに見た目が変わったか、どこが変わったか、どの CSS が原因かを調べる。スクリーンショットからのマークアップ作成なども扱う。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/mizchi/skills/tree/main/void-app">
+          <div class="thumb">🚀</div>
+          <div class="body">
+            <h4>void-app</h4>
+            <p>VoidZero の Void と Vite+ でフルスタックアプリを作る。特に Cloudflare D1 を使う React のアプリ向けで、雛形作成、型付きのローダー・アクション・フォーム、DB マイグレーション、テスト、デプロイ準備まで扱う。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/mizchi/skills/tree/main/waxa-eval">
+          <div class="thumb">📊</div>
+          <div class="body">
+            <h4>waxa-eval</h4>
+            <p>waxa CLI でスキルのプロンプトを評価しながら改善する。評価シナリオと採点方法の作り方や、改善を終える判断の仕方をまとめている。</p>
+          </div>
+        </a>
+      </li>
+    </ul>
+
+    <h3>その他</h3>
+    <ul class="cards">
+      <li>
+        <a class="card" href="https://github.com/phuryn/pm-skills">
+          <div class="thumb">🎯</div>
+          <div class="body">
+            <h4>pm-skills</h4>
+            <p>プロダクトマネジメント用のスキル集。ディスカバリー、戦略、PRD作成、ローンチ計画などのPMフレームワークを、Claude Code で手順どおりに進められる。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/watany-dev/jev-playground/tree/main/.claude/skills/gril-jev">
+          <div class="thumb">🤖</div>
+          <div class="body">
+            <h4>gril-jev</h4>
+            <p>仕様や設計の決定について質問を重ねるが、答えるのはユーザーではなく Jev（typesafe-ai/jev）。決まった内容は ADR として残す。仕様のあいまいな所を決定として確定させたいときに使う。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/imaimai17468/imaimai-front-templete/tree/main/.claude/skills/ticket-work">
+          <div class="thumb">🎫</div>
+          <div class="body">
+            <h4>ticket-work</h4>
+            <p>1つのチケットを、依頼内容の確認からプルリクエストのマージまで7つのステップで進める。機能の追加や変更、バグ修正、リファクタリングを始めるときに使う。1行の修正やドキュメントだけの変更には使わない。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/imaimai17468/imaimai-front-minimal/tree/main/.claude/skills/security-audit">
+          <div class="thumb">🛡️</div>
+          <div class="body">
+            <h4>security-audit</h4>
+            <p>コードベース、API、CLI ツールなどのセキュリティを確認し、脆弱性を探す。セキュリティの質問や部分的なレビューにも使え、全体の監査は頼まれたときだけ行う。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/azukiazusa1/skills/blob/a7f996f1cd700a4a56827f6cf2a130ff5a9ceedf/skills/writing/write-blog-article/SKILL.md">
+          <div class="thumb">✍️</div>
+          <div class="body">
+            <h4>write-blog-article</h4>
+            <p>日本語の技術ブログ記事を、調べて確かめてから下書きする。azukiazusa さんの記事の構成、文体、書式に合わせて書き、書き手がその技術を学べるようにする。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/nwiizo/nippo">
+          <div class="thumb">🗓️</div>
+          <div class="body">
+            <h4>nippo</h4>
+            <p>Claude Code、Codex、opencode の作業履歴を集めて、日報・振り返り・進捗報告を作る。日々の作業を別の場所に書き写さなくて済む。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/nwiizo/oi-owarasero">
+          <div class="thumb">🧘</div>
+          <div class="body">
+            <h4>oi-owarasero</h4>
+            <p>仕事や学習で手が止まった場面を、責めずに対話で振り返る。見えていなかった前提を見つけ、次の一歩を1つ決める。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/Nutlope/hallmark">
+          <div class="thumb">🎨</div>
+          <div class="body">
+            <h4>hallmark</h4>
+            <p>AI が作ったように見えない UI を作るデザインスキル。21のテーマから選んで組み立て、AI によくある見た目になっていないかを確かめてから返す。既存コードの採点や作り直しもできる。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/ayghri/i-have-adhd">
+          <div class="thumb">⏱️</div>
+          <div class="body">
+            <h4>i-have-adhd</h4>
+            <p>エージェントの回答を短くし、次にやることから書かせる。手順は番号付きで並べ、「お役に立てれば幸いです」のような定型文を省く。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/ZzzLc0405/photo-abstract-editorial">
+          <div class="thumb">📷</div>
+          <div class="body">
+            <h4>photo-abstract-editorial</h4>
+            <p>写真1枚を、元の写真・抽象的な図柄のパネル・詩的な英語タイトルを組み合わせた縦長の作品にする Codex 向けスキル。図柄は写真の構図と色の関係から作る。商用利用は不可。</p>
+          </div>
+        </a>
+      </li>
+      <li>
+        <a class="card" href="https://github.com/obra/superpowers">
+          <div class="thumb">🦸</div>
+          <div class="body">
+            <h4>superpowers</h4>
+            <p>コーディングエージェントに開発の進め方を一式教えるスキル集。いきなりコードを書かずに要件を聞き出し、設計と実装計画を確認してから、サブエージェントに作業を分けて進める。</p>
+          </div>
+        </a>
       </li>
     </ul>
   </body>

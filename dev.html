@@ -12,6 +12,36 @@
         font-family: system-ui, sans-serif;
         line-height: 1.7;
         color-scheme: light dark;
+        background: light-dark(#fafaf9, #111);
+      }
+      .card {
+        display: block;
+        max-width: 20rem;
+        overflow: hidden;
+        border: 1px solid light-dark(#e7e5e4, #2a2a2a);
+        border-radius: 1rem;
+        background: light-dark(#fff, #1a1a1a);
+        color: inherit;
+        text-decoration: none;
+      }
+      .thumb {
+        display: grid;
+        place-items: center;
+        aspect-ratio: 2 / 1;
+        background: light-dark(#f0eeec, #242424);
+        font-size: 3.5rem;
+      }
+      .body {
+        padding: 1rem 1.25rem 1.25rem;
+      }
+      .body h2 {
+        margin: 0 0 0.25rem;
+        font-size: 1.05rem;
+      }
+      .body p {
+        margin: 0;
+        font-size: 0.875rem;
+        color: light-dark(#78716c, #a8a29e);
       }
     </style>
   </head>
@@ -22,5 +52,12 @@
       <li><a href="https://zenn.dev/catnose99/articles/547cbf57e5ad28">Webサービス公開前のチェックリスト</a></li>
       <li><a href="https://zenn.dev/saikou_kunisaki/articles/3c39a2f83006d4">個人開発でクローズドなチャットを作るので電気通信事業に届出</a></li>
     </ul>
+    <a class="card" href="dev-notes.html">
+      <div class="thumb">📝</div>
+      <div class="body">
+        <h2>記事に書いてないこと</h2>
+        <p>やってみてわかった補足メモ</p>
+      </div>
+    </a>
   </body>
 </html>
