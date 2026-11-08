@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>コーディングテスト - phihash</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+      body {
+        max-width: 40rem;
+        margin: 0 auto;
+        padding: 3rem 1.25rem;
+        font-family: system-ui, sans-serif;
+        line-height: 1.7;
+      }
+      blockquote {
+        margin-inline: 0;
+        padding-left: 1rem;
+        border-left: 3px solid light-dark(#e7e5e4, #2a2a2a);
+        color: light-dark(#78716c, #a8a29e);
+      }
+      pre {
+        overflow-x: auto;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        background: light-dark(#f5f5f4, #1a1a1a);
+      }
+    </style>
+  </head>
+  <body>
+    <p><a href="career.html">← キャリア</a></p>
+    <h1>コーディングテスト</h1>
+
+    <h2>LeetCode</h2>
+    <h3>3263. Convert Doubly Linked List to Array I (Easy) — 2026-10-04 ✅</h3>
+    <p><a href="https://leetcode.com/problems/convert-doubly-linked-list-to-array-i/" target="_blank" rel="noopener">https://leetcode.com/problems/convert-doubly-linked-list-to-array-i/</a></p>
+    <p>連結リスト（Node: val/prev/next）を先頭から辿って配列に詰めるだけ。prevは使わない（飾り）。</p>
+    <pre><code class="language-python">class Solution:
+    def toArray(self, root: &#39;Optional[Node]&#39;) -&gt; List[int]:
+        res = []
+        while root:
+            res.append(root.val)   # 今の箱の値
+            root = root.next       # 次の箱へ移動
+        return res
+</code></pre>
+    <p>学び:</p>
+    <ul>
+    <li><code>Node</code> はPython標準にない。LeetCodeがエディタ冒頭のコメントで定義を渡してる</li>
+    <li><code>root.next</code> = 次の箱、<code>root.next.val</code> = 次の箱の値（ドットで手繰る）</li>
+    <li>最後の箱の <code>.next</code> は <code>None</code> → <code>while root:</code> で終端判定</li>
+    <li>連結リスト = 箱(Node)を矢印でつないだデータ構造。配列との違いは「番地で一発」vs「矢印を手繰る」</li>
+    </ul>
+    <h3>3173. Bitwise OR of Adjacent Elements (Easy) — 2026-10-04 ✅</h3>
+    <p><a href="https://leetcode.com/problems/bitwise-or-of-adjacent-elements/" target="_blank" rel="noopener">https://leetcode.com/problems/bitwise-or-of-adjacent-elements/</a></p>
+    <p>隣同士をビットOR（<code>|</code>）でつないで長さn-1の配列を返す。</p>
+    <pre><code class="language-python">class Solution:
+    def orArray(self, nums: List[int]) -&gt; List[int]:
+        ans = []
+        for i in range(len(nums)-1):
+            ans.append(nums[i] | nums[i+1])
+        return ans
+</code></pre>
+    <p>学び:</p>
+    <ul>
+    <li>Pythonのビット単位OR = <code>|</code>（パイプ）。論理OR = <code>or</code> は別物</li>
+    <li><code>8 | 4 = 12</code>：ビットで <code>1000 | 0100 = 1100</code>。各桁どちらかが1なら1</li>
+    <li>内包表記で1行化も可: <code>return [nums[i] | nums[i+1] for i in range(len(nums)-1)]</code></li>
+    </ul>
+    <h3>2011. Final Value of Variable After Performing Operations (Easy) — 2026-10-06 ✅</h3>
+    <p><a href="https://leetcode.com/problems/final-value-of-variable-after-performing-operations/" target="_blank" rel="noopener">https://leetcode.com/problems/final-value-of-variable-after-performing-operations/</a></p>
+    <p>X=0から操作文字列を順に適用して最終値を返す。<code>++X/X++</code>は+1、<code>--X/X--</code>は-1。</p>
+    <pre><code class="language-python">class Solution:
+    def finalValueAfterOperations(self, operations: list[str]) -&gt; int:
+        ans = 0
+        for o in operations:
+            if &quot;+&quot; in o:
+                ans += 1
+            else:
+                ans -= 1
+        return ans
+</code></pre>
+    <p>学び:</p>
+    <ul>
+    <li>4種類の操作を <code>&quot;+&quot; in o</code> で+1/-1の2種類に畳むのが賢い。全文字列比較より簡潔</li>
+    <li>O(n)で最適。1行化も可(<code>sum(1 if &quot;+&quot; in o else -1 for o in operations)</code>)だがforの方が読みやすい</li>
+    </ul>
+    <h3>3190. Find Minimum Operations to Make All Elements Divisible by Three (Easy) — 2026-10-06 ❌→理解</h3>
+    <p><a href="https://leetcode.com/problems/find-minimum-operations-to-make-all-elements-divisible-by-three/" target="_blank" rel="noopener">https://leetcode.com/problems/find-minimum-operations-to-make-all-elements-divisible-by-three/</a></p>
+    <p>±1操作で全要素を3の倍数にする最小回数。自力では解けなかった（whileの条件を逆にしてしまった）。</p>
+    <p>正解:</p>
+    <pre><code class="language-python">class Solution:
+    def minimumOperations(self, nums: List[int]) -&gt; int:
+        return sum(1 for x in nums if x % 3 != 0)
+</code></pre>
+    <p>学び:</p>
+    <ul>
+    <li>3で割った余りは 0/1/2 の3種。余り1は-1、余り2は+1で、<strong>どちらも1歩</strong>で倍数に届く</li>
+    <li>だから「割り切れない要素の個数」＝答え。whileでちまちま足す必要なし（2歩以上かかる数が存在しない）</li>
+    <li>n=3が特殊なだけ。一般には <strong>歩数 = min(余り, n-余り)</strong>。n=4,5だと2歩かかる余りが出てくる
+    → 一般形: <code>sum(min(x%n, n-x%n) for x in nums)</code></li>
+    </ul>
+    <h3>1920. Build Array from Permutation (Easy) — 2026-10-05 ✅🔧</h3>
+    <p><a href="https://leetcode.com/problems/build-array-from-permutation/" target="_blank" rel="noopener">https://leetcode.com/problems/build-array-from-permutation/</a></p>
+    <p><code>ans[i] = nums[nums[i]]</code>（添字の二段引き）を全iで作る。<code>nums[i]</code>で出た値を、もう一回添字として引く。</p>
+    <p>提出した版（AC、O(n)時間・O(n)空間）:</p>
+    <pre><code class="language-python">class Solution:
+    def buildArray(self, nums: list[int]) -&gt; list[int]:
+        ans = []
+        for x in range(len(nums)):
+            ans.append(nums[nums[x]])
+        return ans
+</code></pre>
+    <p>学び:</p>
+    <ul>
+    <li><code>nums[x]</code>（一段）だとただのコピー。<code>nums[nums[x]]</code>（二段）が正解。カッコの重ね方が全て</li>
+    <li>時間はO(n)で最適。内包表記 <code>[nums[nums[x]] for x in range(len(nums))]</code> にすると<code>append</code>が消えて微速。計算量は同じ</li>
+    <li>Follow-up: O(1)メモリ（<code>ans</code>を作らず<code>nums</code>に詰め込む）は未着手</li>
+    </ul>
+    <h3>3668. Restore Finishing Order (Easy) — 2026-10-05 ✅🔧</h3>
+    <p><a href="https://leetcode.com/problems/restore-finishing-order/" target="_blank" rel="noopener">https://leetcode.com/problems/restore-finishing-order/</a></p>
+    <p>完走順 <code>order</code> から、友達 <code>friends</code> のIDだけを完走順で抜き出す。</p>
+    <p>提出した版（AC、ただし <code>in friends</code> が毎回リスト線形探索でO(n*m)）:</p>
+    <pre><code class="language-python">class Solution:
+    def recoverOrder(self, order: List[int], friends: List[int]) -&gt; List[int]:
+        ans = []
+        for element in order:
+            if element in friends:
+                ans.append(element)
+        return ans
+</code></pre>
+    <p>改善版（friendsをsetにして所属判定O(1)）:</p>
+    <pre><code class="language-python">class Solution:
+    def recoverOrder(self, order: List[int], friends: List[int]) -&gt; List[int]:
+        fs = set(friends)
+        return [x for x in order if x in fs]
+</code></pre>
+    <p>学び:</p>
+    <ul>
+    <li>「集合に対する所属判定(<code>in</code>)はset」が定石。listのままだと端から線形探索</li>
+    <li><code>x in fs</code> はlist/setどっちでも動く。違うのは速さだけ（list=O(m)端から探索 / set=O(1)ハッシュ一発）。setじゃなきゃダメなわけではない</li>
+    <li>今回はn≤100で速度差ゼロだが、クセとしてset化を身につける</li>
+    </ul>
+    <h3>Minimum Operations to Make Array Sum Divisible by K (Easy) — 2026-10-05 ✅</h3>
+    <p><a href="https://leetcode.com/problems/minimum-operations-to-make-array-sum-divisible-by-k/" target="_blank" rel="noopener">https://leetcode.com/problems/minimum-operations-to-make-array-sum-divisible-by-k/</a></p>
+    <p>1回の操作で要素を1減らせる。合計をkで割り切れるようにする最小操作回数。</p>
+    <pre><code class="language-python">class Solution:
+    def minOperations(self, nums: List[int], k: int) -&gt; int:
+        return sum(nums) % k
+</code></pre>
+    <p>学び:</p>
+    <ul>
+    <li>操作は「引く」だけ → 合計Sは下にしか動かせない。S以下で一番近いkの倍数まで減らすのが最小</li>
+    <li>その差がちょうど <code>S % k</code>。どの要素を削るかは無関係（合計さえ合えばいい）</li>
+    </ul>
+    <h3>3898. Find the Degree of Each Vertex (Easy) — 2026-10-05 ✅</h3>
+    <p><a href="https://leetcode.com/problems/find-the-degree-of-each-vertex/" target="_blank" rel="noopener">https://leetcode.com/problems/find-the-degree-of-each-vertex/</a></p>
+    <p>隣接行列から各頂点の次数（つながる辺の数）を返す。各行の1の個数＝その頂点の次数なので、行の合計を取るだけ。</p>
+    <pre><code class="language-python">class Solution:
+    def findDegrees(self, matrix: list[list[int]]) -&gt; list[int]:
+        return [sum(row) for row in matrix]
+</code></pre>
+    <p>学び:</p>
+    <ul>
+    <li>隣接行列: <code>matrix[i][j]=1</code> なら頂点 i-j 間に辺あり。i行目の1の総数 = 頂点iの次数</li>
+    <li>0/1の行は <code>sum()</code> で1の個数が出る（合計＝カウント）</li>
+    <li>無向グラフなので行列は対称。行で見ても列で見ても同じ</li>
+    </ul>
+    <h3>Library Late Fee Calculator (Easy) — 2026-10-05 ✅🔧</h3>
+    <p><a href="https://leetcode.com/problems/library-late-fee-calculator/" target="_blank" rel="noopener">https://leetcode.com/problems/library-late-fee-calculator/</a></p>
+    <p>返却遅延日数に応じた罰金の合計。1日→1、2〜5日→2倍、6日以上→3倍。</p>
+    <pre><code class="language-python">class Solution:
+    def lateFee(self, daysLate: List[int]) -&gt; int:
+        ans = 0
+        for d in daysLate:
+            if d == 1:
+                ans += 1
+            elif d &lt;= 5:
+                ans += 2 * d
+            else:
+                ans += 3 * d
+        return ans
+</code></pre>
+    <p>学び:</p>
+    <ul>
+    <li>添字(<code>for i in range(len())</code>)より値を直接回す(<code>for d in daysLate</code>)方が読みやすい</li>
+    <li><code>if d == 1</code> を抜けた時点で <code>d &gt;= 2</code> 確定 → <code>elif d &lt;= 5</code> で下限チェック不要</li>
+    <li>1行化も可だが三項2段で読みにくい: <code>return sum(1 if d==1 else 2*d if d&lt;=5 else 3*d for d in daysLate)</code></li>
+    </ul>
+  </body>
+</html>
