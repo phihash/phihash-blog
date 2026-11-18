@@ -1,0 +1,919 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ドリル - phihash</title>
+    <link rel="stylesheet" href="nav.css" />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: light-dark(#ecebe9, #0c0c0c);
+        --panel: light-dark(#fff, #1a1a1a);
+        --soft: light-dark(#f4f3f1, #242424);
+        --hover: light-dark(#e4e2df, #1f1f1f);
+        --line: light-dark(#e7e5e4, #2a2a2a);
+        --text-2: light-dark(#44403c, #d6d3d1);
+        --muted: light-dark(#78716c, #a8a29e);
+        --accent: light-dark(#0b6bdc, #5aa2ff);
+        --accent-soft: light-dark(#e3effd, #16263b);
+        --ok: light-dark(#1f8a4c, #4ccf85);
+        --ok-soft: light-dark(#e6f4ec, #13281c);
+        --ng: light-dark(#c4521b, #f08a55);
+        --ng-soft: light-dark(#fbece4, #2e1a10);
+      }
+      body {
+        margin: 0;
+        padding: 0.75rem;
+        font-family: system-ui, sans-serif;
+        line-height: 1.7;
+        background: var(--bg);
+      }
+      h1 {
+        margin: 0 0 0.25rem;
+        font-size: 1.5rem;
+      }
+      button {
+        font: inherit;
+        color: inherit;
+      }
+      button:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      .app {
+        display: grid;
+        gap: 0.75rem;
+      }
+      .panel {
+        border-radius: 1rem;
+        background: var(--panel);
+      }
+
+      /* 左：問題リスト */
+      .list {
+        padding: 3.5rem 1rem 1.5rem;
+      }
+      .intro {
+        margin: 0;
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+      .progress {
+        height: 0.35rem;
+        margin: 0.75rem 0 0.25rem;
+        overflow: hidden;
+        border-radius: 999px;
+        background: var(--line);
+      }
+      .progress i {
+        display: block;
+        width: 0;
+        height: 100%;
+        background: var(--ok);
+        transition: width 0.3s;
+      }
+      .progress-text {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+      .list h2 {
+        margin: 1.25rem 0 0.25rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.5rem;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-size: 0.8rem;
+        font-weight: 600;
+      }
+      .list ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+      .list li + li {
+        border-top: 1px solid var(--line);
+      }
+      .list a {
+        display: grid;
+        grid-template-columns: 2rem 1fr auto;
+        align-items: baseline;
+        margin: 0.25rem 0;
+        padding: 0.5rem 0.75rem;
+        border-left: 3px solid transparent;
+        border-radius: 0.5rem;
+        color: inherit;
+        text-decoration: none;
+      }
+      .list a:hover {
+        background: var(--hover);
+      }
+      .list a[aria-current] {
+        border-left-color: var(--accent);
+        background: var(--hover);
+      }
+      .list .qn {
+        color: var(--muted);
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+      .list .mark {
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+      .mark.ok {
+        color: var(--ok);
+      }
+      .mark.ng {
+        color: var(--ng);
+      }
+
+      /* 真ん中：問題 */
+      .q {
+        display: grid;
+      }
+      .main {
+        padding: 2rem 1.5rem;
+      }
+      .crumb {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+      .tag {
+        margin-left: 0.5rem;
+        padding: 0.1rem 0.5rem;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+      .title {
+        margin: 0.25rem 0 1rem;
+        font-size: 1.5rem;
+        line-height: 1.4;
+      }
+      .hints {
+        margin: 1rem 0;
+        padding: 0.75rem 1rem 0.75rem 2rem;
+        border-radius: 0.75rem;
+        background: var(--soft);
+      }
+      .choices {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+        gap: 0.75rem;
+        margin-top: 1.25rem;
+      }
+      .choice {
+        position: relative;
+        padding: 1rem 2.75rem 1rem 1rem;
+        border: 1.5px solid transparent;
+        border-radius: 0.75rem;
+        background: var(--soft);
+        text-align: left;
+        cursor: pointer;
+        transition:
+          border-color 0.15s,
+          background 0.15s,
+          opacity 0.15s;
+      }
+      .choice:hover:not(:disabled) {
+        border-color: var(--line);
+      }
+      .choice:disabled {
+        cursor: default;
+      }
+      .choice b {
+        margin-right: 0.4rem;
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+      .choice span {
+        display: block;
+        margin-top: 0.25rem;
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+      .choice::before {
+        content: "";
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        width: 1.25rem;
+        height: 1.25rem;
+        box-sizing: border-box;
+        border: 1.5px solid var(--muted);
+        border-radius: var(--shape, 50%);
+      }
+      .multi .choice {
+        --shape: 0.3rem;
+      }
+      .choice.picked {
+        border-color: var(--accent);
+      }
+      .choice.picked::before {
+        border: 6px solid var(--accent);
+      }
+      .choice.ng {
+        border-color: var(--ng);
+        background: var(--ng-soft);
+      }
+      .choice.ng::before {
+        border: 6px solid var(--ng);
+      }
+      .choice.ok {
+        border-color: var(--ok);
+        background: var(--ok-soft);
+      }
+      .choice.ok.picked::before {
+        border: 6px solid var(--ok);
+      }
+      .choice.ok::after {
+        content: "正解";
+        position: absolute;
+        right: 0.75rem;
+        bottom: 0.6rem;
+        color: var(--ok);
+        font-size: 0.75rem;
+        font-weight: 700;
+      }
+      .choice.dim {
+        opacity: 0.5;
+      }
+
+      /* 並べ替え */
+      .slots {
+        display: grid;
+        gap: 0.5rem;
+        margin: 1.25rem 0 0;
+        padding: 0;
+        list-style: none;
+      }
+      .slot {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        min-height: 2.75rem;
+        padding: 0.5rem 0.75rem;
+        border: 1.5px dashed var(--line);
+        border-radius: 0.75rem;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .slot .num {
+        display: grid;
+        flex: none;
+        place-items: center;
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: 50%;
+        background: var(--line);
+        color: var(--muted);
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+      .slot.filled {
+        border-style: solid;
+        border-color: var(--accent);
+        background: var(--accent-soft);
+        color: inherit;
+        cursor: pointer;
+        animation: pop 0.2s ease-out;
+      }
+      .slot.filled .num {
+        background: var(--accent);
+        color: var(--panel);
+      }
+      .slot.ok {
+        border-color: var(--ok);
+        background: var(--ok-soft);
+        cursor: default;
+      }
+      .slot.ok,
+      .slot.ng {
+        border-style: solid;
+        color: inherit;
+      }
+      .slot.ok .num,
+      .slot.ng .num {
+        color: var(--panel);
+      }
+      .slot.ok .num {
+        background: var(--ok);
+      }
+      .slot.ng {
+        border-color: var(--ng);
+        background: var(--ng-soft);
+        cursor: default;
+      }
+      .slot.ng .num {
+        background: var(--ng);
+      }
+      .pool {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 1rem;
+      }
+      .chip {
+        padding: 0.5rem 0.9rem;
+        border: 1.5px solid var(--line);
+        border-radius: 0.75rem;
+        background: var(--panel);
+        text-align: left;
+        cursor: pointer;
+        transition:
+          transform 0.15s,
+          border-color 0.15s;
+      }
+      .chip:hover {
+        border-color: var(--accent);
+        transform: translateY(-1px);
+      }
+      .label {
+        margin: 1.25rem 0 0;
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 1.25rem;
+      }
+      .btn {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--panel);
+        font-size: 0.85rem;
+        cursor: pointer;
+      }
+      .btn.primary {
+        border-color: var(--accent);
+        background: var(--accent);
+        color: var(--panel);
+        font-weight: 600;
+      }
+      .btn:disabled {
+        opacity: 0.4;
+        cursor: default;
+      }
+      .result {
+        margin: 1.25rem 0 0;
+        font-weight: 700;
+        animation: rise 0.25s ease-out;
+      }
+      .result.ok {
+        color: var(--ok);
+      }
+      .result.ng {
+        color: var(--ng);
+      }
+
+      /* 右：解説 */
+      .answer {
+        padding: 2rem 1.5rem;
+        border-top: 1px solid var(--line);
+      }
+      .answer .before {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .answer .after {
+        animation: rise 0.25s ease-out;
+      }
+      .answer h4 {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 1.5rem 0 0.5rem;
+        font-size: 1rem;
+      }
+      .answer h4:first-child {
+        margin-top: 0;
+      }
+      .answer h4 + * {
+        margin-top: 0;
+      }
+      .answer .n {
+        display: grid;
+        flex: none;
+        place-items: center;
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: 50%;
+        background: var(--accent);
+        color: var(--panel);
+        font-size: 0.8rem;
+      }
+      .answer p,
+      .answer li {
+        color: var(--text-2);
+        font-size: 0.92rem;
+      }
+      .answer ul,
+      .answer ol {
+        padding-left: 1.25rem;
+      }
+      code {
+        padding: 0.05rem 0.3rem;
+        border-radius: 0.3rem;
+        background: var(--soft);
+        font-size: 0.85em;
+      }
+      .next {
+        margin-top: 1.5rem;
+      }
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(0.4rem);
+        }
+      }
+      @keyframes pop {
+        from {
+          transform: scale(0.97);
+        }
+      }
+
+      @media (min-width: 56rem) {
+        body {
+          padding: 0.75rem 0.75rem 0.75rem 0;
+        }
+        .app {
+          grid-template-columns: 17rem 1fr;
+          align-items: start;
+        }
+        .list {
+          position: sticky;
+          top: 0.75rem;
+          max-height: calc(100vh - 1.5rem);
+          overflow-y: auto;
+          padding-top: 1.5rem;
+          box-sizing: border-box;
+        }
+        .main {
+          padding: 2.5rem;
+        }
+      }
+      @media (min-width: 90rem) {
+        .q {
+          grid-template-columns: 1fr 22rem;
+        }
+        .answer {
+          border-top: 0;
+          border-left: 1px solid var(--line);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation: none !important;
+          transition: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <input type="checkbox" id="nav" class="nav-toggle" />
+    <label for="nav" class="nav-open" aria-label="メニュー">☰</label>
+    <label for="nav" class="nav-backdrop"></label>
+    <nav class="drawer">
+      <a class="home" href="index.html">phihash</a>
+      <a href="dev.html">🛠️ 個人開発</a>
+      <a href="stack.html">🧰 道具箱</a>
+      <a href="tips.html">💡 小ネタ</a>
+      <a href="think.html">✍️ 考える</a>
+      <a href="tsundoku.html">📚 積読</a>
+      <a href="devenv.html">💻 開発環境</a>
+      <a href="career.html">💼 キャリア</a>
+      <a href="drill.html" aria-current="page">🏋️ ドリル</a>
+    </nav>
+
+    <div class="app">
+      <div class="list">
+        <h1>ドリル</h1>
+        <p class="intro">新しく学んだ仕組みを、あとから解き直して身につける。</p>
+        <div class="progress"><i id="bar"></i></div>
+        <p class="progress-text" id="count"></p>
+        <div id="list"></div>
+      </div>
+      <div class="panel q" id="q" aria-live="polite"></div>
+    </div>
+
+    <script>
+      // 問題データ。type: choice（1つ選ぶ）/ multi（全部選ぶ）/ order（順番に並べる）
+      // choice・multi は options の ok: true が正解。order は steps を正しい順で書く（表示はシャッフル）
+      const DRILLS = [
+        {
+          group: "証明書・TLS：流れ",
+          title: "証明書が使えるようになるまで",
+          type: "order",
+          q: "HTTPS のサイトが「信頼された証明書」を使えるようになるまでの流れを、順番に並べてください。",
+          steps: [
+            "ルート認証局が鍵ペアを作る",
+            "ルート認証局が自分の秘密鍵で、自分のルート証明書に署名する（自己署名）",
+            "OS・ブラウザのベンダーが、ルート証明書をトラストストアに事前に登録する",
+            "ルート認証局が、中間認証局の証明書に署名する",
+            "サーバー運営者が鍵ペアを作り、公開鍵とドメイン名を入れた CSR を中間認証局に送る",
+            "中間認証局がドメインの管理権を確認し、サーバー証明書に署名する",
+            "サーバーに、サーバー証明書・中間証明書・秘密鍵を設置する",
+          ],
+          explain: [
+            ["信頼の起点は「事前登録」", "<p>ブラウザが信じるのは、最初からトラストストアに入っているルート証明書だけ。ここに入れてもらうのに、認証局は厳しい監査を通る。</p>"],
+            ["ルートは中間に署名するだけ", "<p>ルートの秘密鍵はふだんオフラインにしまっておき、中間認証局の証明書に署名するときだけ取り出す。</p>"],
+            ["秘密鍵はサーバーから出ない", "<p>CSR に入れて送るのは公開鍵だけ。秘密鍵は最後までサーバー運営者の手元にある。</p>"],
+          ],
+        },
+        {
+          group: "証明書・TLS：流れ",
+          title: "ブラウザが証明書を確かめる流れ",
+          type: "order",
+          q: "ブラウザが HTTPS のサイトにつないで、証明書を「信頼できる」と判断するまでを、順番に並べてください。",
+          steps: [
+            "サーバーが、サーバー証明書と中間証明書を送ってくる",
+            "サーバー証明書の署名を、中間証明書の公開鍵で検証する",
+            "中間証明書の署名を、ルート証明書の公開鍵で検証する",
+            "そのルート証明書が、手元のトラストストアにあるか確かめる",
+            "有効期限・ドメイン名・失効していないかを確かめる",
+          ],
+          explain: [
+            ["下から上へたどる", "<p>各段の署名を「1つ上の公開鍵」で検証していき、最後に手元のルートに行き着けば信頼する。</p>"],
+            ["問い合わせはしない", "<p>チェーンの検証そのものは、ブラウザの手元だけでできる。認証局のサーバーに毎回「本物？」と聞いているわけではない。</p>"],
+            ["署名だけでは足りない", "<p>正しく署名されていても、期限切れ・別ドメイン用・失効済みの証明書なら拒否する。</p>"],
+          ],
+        },
+        {
+          group: "証明書・TLS：しくみ",
+          title: "中間認証局はなぜあるのか",
+          type: "choice",
+          q: "ルート認証局が直接サーバー証明書に署名せず、間に中間認証局をはさむのはなぜ？",
+          hints: ["ルート証明書は OS やブラウザに入っていて、簡単には入れ替えられない", "署名をするには、秘密鍵をオンラインで使う必要がある"],
+          options: [
+            { t: "処理を分散して速くするため", d: "ルートだけだと署名が追いつかない" },
+            { t: "ルートの秘密鍵を守るため", d: "ルートの鍵はオフラインにしまっておける", ok: true },
+            { t: "証明書を安く発行するため", d: "中間認証局のほうが手数料が安い" },
+          ],
+          explain: [
+            ["ルートは入れ替えられない", "<p>ルート証明書の差し替えには何年もかかる。ルートの秘密鍵が漏れたら、世界中の信頼が崩れる。</p>"],
+            ["ふだんは中間が署名する", "<ul><li>ルートの秘密鍵はオフライン（HSM など）に置き、中間に署名するときだけ使う。</li><li>毎日の発行は、オンラインの中間認証局がやる。</li></ul>"],
+            ["漏れても被害が小さい", "<p>中間の鍵が漏れても、その中間を失効させて新しい中間を作ればいい。ルートは無事なまま。</p>"],
+          ],
+        },
+        {
+          group: "証明書・TLS：しくみ",
+          title: "ルート証明書は誰が署名する？",
+          type: "choice",
+          q: "チェーンのいちばん上にあるルート証明書には、誰が署名している？",
+          options: [
+            { t: "OS・ブラウザのベンダー", d: "Apple や Google が署名する" },
+            { t: "もっと上位の国際機関", d: "世界共通の最上位認証局がある" },
+            { t: "ルート認証局自身", d: "自分の秘密鍵で自分に署名する", ok: true },
+          ],
+          explain: [
+            ["自己署名", "<p>ルート証明書は、自分の秘密鍵で自分に署名した「自己署名証明書」。署名だけ見れば、誰でも作れるオレオレ証明書と同じ形。</p>"],
+            ["信頼の根拠は署名ではない", "<p>ルートが信頼されるのは、OS・ブラウザのトラストストアに事前登録されているから。署名で信頼が決まるのは中間から下。</p>"],
+          ],
+        },
+        {
+          group: "証明書・TLS：しくみ",
+          title: "CSR に入れるもの",
+          type: "multi",
+          q: "証明書を申請するときの CSR（証明書署名要求）に入れるものを、すべて選んでください。",
+          options: [
+            { t: "公開鍵", d: "証明書に載せてもらう鍵", ok: true },
+            { t: "ドメイン名などの情報", d: "誰のための証明書か", ok: true },
+            { t: "秘密鍵", d: "本人確認のために一緒に送る" },
+            { t: "秘密鍵による署名", d: "その公開鍵の持ち主だと示す", ok: true },
+          ],
+          explain: [
+            ["秘密鍵は送らない", "<p>秘密鍵は一度もサーバーの外に出さない。認証局すら知らない。</p>"],
+            ["署名で持ち主を示す", "<p>CSR 全体に自分の秘密鍵で署名しておくことで、「この公開鍵に対応する秘密鍵を持っている」ことを示せる。</p>"],
+          ],
+        },
+        {
+          group: "証明書・TLS：しくみ",
+          title: "サーバーが送る証明書",
+          type: "choice",
+          q: "TLS の接続で、サーバーがクライアントに送るべき証明書はどれ？",
+          hints: ["クライアントの手元に最初からあるのは、ルート証明書だけ", "手元の Chrome では動くのに、curl だけ失敗することがある"],
+          options: [
+            { t: "サーバー証明書だけ", d: "残りはクライアントが持っている" },
+            { t: "サーバー証明書＋中間証明書", d: "ルートの手前までをそろえて送る", ok: true },
+            { t: "サーバー・中間・ルートの全部", d: "念のため一式を送る" },
+          ],
+          explain: [
+            ["中間は手元にない", "<p>中間証明書を送らないと、サーバー証明書からルートまで署名をたどれない。</p>"],
+            ["「Chrome では動く」の罠", "<p>ブラウザは過去に見た中間をキャッシュしたり、証明書内の URL（AIA）から取りに行ったりする。curl や一部の端末はそれをしないので、中間を送り忘れるとそこでだけ失敗する。</p>"],
+            ["ルートは送らなくていい", "<p>ルートはトラストストアにあるものしか信頼されない。Let's Encrypt の <code>fullchain.pem</code> がサーバー＋中間なのはこのため。</p>"],
+          ],
+        },
+        {
+          group: "証明書・TLS：しくみ",
+          title: "ブラウザが確かめること",
+          type: "multi",
+          q: "ブラウザが証明書を受け取ったときに確かめることを、すべて選んでください。",
+          options: [
+            { t: "署名をたどってルートに行き着くか", ok: true },
+            { t: "有効期限内か", ok: true },
+            { t: "アクセス先のドメイン名と一致するか", ok: true },
+            { t: "サーバーが日本国内にあるか" },
+            { t: "失効していないか", ok: true },
+          ],
+          explain: [
+            ["4つそろって初めて OK", "<p>チェーン・期限・ドメイン名（SAN）・失効のどれか1つでもだめなら、警告が出る。</p>"],
+            ["場所は関係ない", "<p>証明書が保証するのは「このドメインの持ち主の鍵であること」。サーバーの場所や運営者の善良さは保証しない。</p>"],
+          ],
+        },
+        {
+          group: "証明書・TLS：発行と運用",
+          title: "DV 証明書が保証するもの",
+          type: "choice",
+          q: "Let's Encrypt などが発行する DV（ドメイン認証）証明書が保証しているのはどれ？",
+          options: [
+            { t: "そのドメインを管理している人の鍵であること", d: "ドメインの管理権だけを確認する", ok: true },
+            { t: "運営している会社が実在すること", d: "登記などを確認する" },
+            { t: "サイトが安全で詐欺ではないこと", d: "中身を審査している" },
+          ],
+          explain: [
+            ["鍵マークは「暗号化されている」だけ", "<p>DV 証明書は、申請者がドメインを操作できることしか確認しない。フィッシングサイトでも普通に取れる。</p>"],
+            ["OV・EV", "<p>組織の実在まで確認するのが OV・EV。ただし今のブラウザは EV でも見た目をほとんど変えない。</p>"],
+          ],
+        },
+        {
+          group: "証明書・TLS：発行と運用",
+          title: "ACME の HTTP-01 チャレンジ",
+          type: "order",
+          q: "Let's Encrypt が HTTP-01 チャレンジでドメインの管理権を確かめる流れを、順番に並べてください。",
+          steps: [
+            "クライアント（certbot など）が、証明書を発行してほしいドメインを伝える",
+            "Let's Encrypt が、トークンを返す",
+            "クライアントが、トークンを /.well-known/acme-challenge/ に置く",
+            "Let's Encrypt が、そのドメインに HTTP でアクセスしてトークンを確かめる",
+            "確認できたら、証明書を発行する",
+          ],
+          explain: [
+            ["「そこに置ける＝管理している」", "<p>指定された場所にファイルを置けるのは、そのドメインのサーバーを操作できる人だけ、という考え方。</p>"],
+            ["DNS-01 もある", "<p>DNS の TXT レコードにトークンを置く方法。ワイルドカード証明書はこちらでしか取れない。</p>"],
+          ],
+        },
+        {
+          group: "証明書・TLS：発行と運用",
+          title: "ワイルドカード証明書の範囲",
+          type: "multi",
+          q: "<code>*.example.com</code> の証明書で使えるドメインを、すべて選んでください。",
+          options: [
+            { t: "www.example.com", ok: true },
+            { t: "api.example.com", ok: true },
+            { t: "example.com" },
+            { t: "v1.api.example.com" },
+          ],
+          explain: [
+            ["* は1階層だけ", "<p><code>*</code> がカバーするのは、ちょうど1つのラベル。<code>v1.api.example.com</code> のような2階層下は対象外。</p>"],
+            ["親ドメインも別", "<p><code>example.com</code> そのものは含まれない。ふつうは SAN に <code>example.com</code> と <code>*.example.com</code> を両方入れる。</p>"],
+          ],
+        },
+        {
+          group: "証明書・TLS：発行と運用",
+          title: "証明書の有効期限が短くなる理由",
+          type: "choice",
+          q: "証明書の最長有効期限は、段階的に短くなっていく（最終的に 47 日）。いちばんの理由は？",
+          options: [
+            { t: "認証局がたくさん発行して儲けるため", d: "更新のたびに料金が入る" },
+            { t: "失効がうまく機能しないので、期限で被害を区切るため", d: "漏れた証明書が使える期間を短くする", ok: true },
+            { t: "暗号が古くなるのが速くなったため", d: "数か月で鍵が破られる" },
+          ],
+          explain: [
+            ["失効は当てにならない", "<p>失効の確認は、通信が届かないと「まあいいか」で通してしまうブラウザが多い。だから、期限そのものを短くするのがいちばん確実。</p>"],
+            ["自動更新が前提", "<p>47 日では人が手で更新できないので、ACME などでの自動更新が前提になる。</p>"],
+          ],
+        },
+        {
+          group: "証明書・TLS：トラブル",
+          title: "秘密鍵が漏れたら",
+          type: "order",
+          q: "サーバーの秘密鍵が漏れたときの対応を、順番に並べてください。",
+          steps: [
+            "新しい鍵ペアを作る",
+            "新しい鍵で CSR を作り、証明書を再発行してもらう",
+            "サーバーの証明書と秘密鍵を新しいものに差し替える",
+            "古い証明書を失効させる",
+          ],
+          explain: [
+            ["鍵ごと作り直す", "<p>同じ鍵で更新しても意味がない。漏れた鍵とは別の鍵ペアから作り直す。</p>"],
+            ["差し替えてから失効", "<p>先に失効させると、差し替えるまでのあいだサイトが落ちる。新しい証明書を入れてから古いものを失効させる。</p>"],
+            ["失効させないと", "<p>古い証明書は期限まで有効なまま。漏れた鍵で、なりすましサーバーを立てられてしまう。</p>"],
+          ],
+        },
+        {
+          group: "証明書・TLS：トラブル",
+          title: "OCSP stapling",
+          type: "choice",
+          q: "OCSP stapling では、失効していないことの証明を誰がブラウザに渡す？",
+          options: [
+            { t: "ブラウザが毎回認証局に問い合わせる", d: "接続のたびに OCSP サーバーへ" },
+            { t: "サーバーが認証局の応答を添えて渡す", d: "TLS の接続時に一緒に送る", ok: true },
+            { t: "DNS が一緒に返す", d: "名前解決のときに付いてくる" },
+          ],
+          explain: [
+            ["ブラウザが聞くと困ること", "<p>遅くなるうえに、「誰がどのサイトを見ているか」が認証局に筒抜けになる。</p>"],
+            ["サーバーがホチキス留め", "<p>認証局の署名入りの応答をサーバーが取ってきて、証明書と一緒に送る。だから stapling（ホチキス留め）。</p>"],
+            ["最近の流れ", "<p>Let's Encrypt は 2025 年に OCSP をやめ、CRL と短い有効期限に寄せた。</p>"],
+          ],
+        },
+        {
+          group: "証明書・TLS：トラブル",
+          title: "Certificate Transparency",
+          type: "choice",
+          q: "Certificate Transparency（CT）で、発行された証明書を公開ログに記録するのは何のため？",
+          options: [
+            { t: "誤発行や不正発行を、ドメインの持ち主が見つけられるようにする", d: "誰でもログを監視できる", ok: true },
+            { t: "失効した証明書を一覧にする", d: "CRL の代わりになる" },
+            { t: "通信を暗号化する鍵を共有する", d: "ログ経由で鍵を配る" },
+          ],
+          explain: [
+            ["認証局を見張る", "<p>認証局が間違って（または攻撃されて）自分のドメインの証明書を発行しても、ログを見れば気づける。crt.sh で誰でも検索できる。</p>"],
+            ["ログにないと弾かれる", "<p>Chrome や Safari は、CT ログに記録された証拠（SCT）がない証明書を信頼しない。</p>"],
+          ],
+        },
+        {
+          group: "証明書・TLS：トラブル",
+          title: "mkcert で警告が出ない理由",
+          type: "choice",
+          q: "ローカル開発で自分で作った証明書は警告が出るのに、mkcert で作った証明書だと出ないのはなぜ？",
+          hints: ["mkcert は最初に <code>mkcert -install</code> を実行する"],
+          options: [
+            { t: "mkcert が Let's Encrypt から本物の証明書を取ってくるから", d: "localhost 用に発行してもらう" },
+            { t: "ローカルにルート認証局を作り、自分のトラストストアに登録するから", d: "自分の PC でだけ信頼される", ok: true },
+            { t: "localhost はもともと警告が出ないから", d: "ブラウザが特別扱いする" },
+          ],
+          explain: [
+            ["自分専用のルート", "<p><code>mkcert -install</code> で自分用のルート認証局を作り、OS とブラウザのトラストストアに登録する。あとはそのルートで証明書に署名するだけ。</p>"],
+            ["警告の正体", "<p>オレオレ証明書の警告は、暗号が弱いからではなく、トラストストアにないルートで署名されているから。</p>"],
+            ["気をつけること", "<p>そのルートの秘密鍵（<code>rootCA-key.pem</code>）が漏れると、自分の PC 向けに何でも偽造できてしまう。人に渡さない。</p>"],
+          ],
+        },
+      ];
+
+      const KEY = "drill-results";
+      let results = {};
+      try {
+        results = JSON.parse(localStorage.getItem(KEY)) || {};
+      } catch {}
+      const save = () => {
+        try {
+          localStorage.setItem(KEY, JSON.stringify(results));
+        } catch {}
+      };
+
+      const $q = document.getElementById("q");
+      const $list = document.getElementById("list");
+      const TYPE = { choice: "1つ選ぶ", multi: "すべて選ぶ", order: "順番に並べる" };
+      const idOf = (i) => "q" + (i + 1);
+      const shuffle = (a) => a.map((v) => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map((x) => x[1]);
+      const el = (tag, cls, html) => {
+        const e = document.createElement(tag);
+        if (cls) e.className = cls;
+        if (html != null) e.innerHTML = html;
+        return e;
+      };
+
+      function renderList(cur) {
+        $list.innerHTML = "";
+        let group, ul;
+        DRILLS.forEach((d, i) => {
+          if (d.group !== group) {
+            group = d.group;
+            $list.append(el("h2", "", group));
+            ul = $list.appendChild(el("ul"));
+          }
+          const r = results[idOf(i)];
+          const a = el("a", "", `<span class="qn">Q${i + 1}</span><span>${d.title}</span><span class="mark ${r || ""}">${r === "ok" ? "✓" : r === "ng" ? "✗" : ""}</span>`);
+          a.href = "#" + idOf(i);
+          if (i === cur) a.setAttribute("aria-current", "true");
+          ul.appendChild(el("li")).append(a);
+        });
+        const done = Object.values(results).filter((v) => v === "ok").length;
+        document.getElementById("bar").style.width = (done / DRILLS.length) * 100 + "%";
+        document.getElementById("count").textContent = `${done} / ${DRILLS.length} 問 正解`;
+      }
+
+      function render() {
+        let i = DRILLS.findIndex((_, i) => "#" + idOf(i) === location.hash);
+        if (i < 0) i = 0;
+        const d = DRILLS[i];
+        renderList(i);
+        $q.innerHTML = "";
+
+        const main = $q.appendChild(el("div", "main"));
+        const answer = $q.appendChild(el("aside", "answer", `<p class="before">答えると、ここに解説が出ます。</p>`));
+        main.append(el("p", "crumb", `Q${i + 1} · ${d.group}<span class="tag">${TYPE[d.type]}</span>`));
+        main.append(el("h3", "title", d.q));
+        if (d.hints) main.append(el("ul", "hints", d.hints.map((h) => `<li>${h}</li>`).join("")));
+        const actions = el("div", "actions");
+
+        const finish = (ok) => {
+          results[idOf(i)] = ok ? "ok" : "ng";
+          save();
+          renderList(i);
+          main.insertBefore(el("p", "result " + (ok ? "ok" : "ng"), ok ? "正解！" : "おしい。正しい答えを緑で示しています。"), actions);
+          const after = el("div", "after");
+          d.explain.forEach(([h, body], k) => after.append(el("h4", "", `<span class="n">${k + 1}</span>${h}`), el("div", "", body)));
+          if (d.type === "order") after.prepend(el("h4", "", `<span class="n">✓</span>正しい順番`), el("ol", "", d.steps.map((s) => `<li>${s}</li>`).join("")));
+          if (i + 1 < DRILLS.length) {
+            const next = el("a", "btn primary next", `次の問題へ →`);
+            next.href = "#" + idOf(i + 1);
+            next.style.display = "inline-block";
+            next.style.textDecoration = "none";
+            after.append(next);
+          }
+          answer.replaceChildren(after);
+          actions.replaceChildren(retry);
+        };
+        const retry = el("button", "btn", "もう一度解く");
+        retry.onclick = render;
+
+        if (d.type === "choice" || d.type === "multi") {
+          const box = main.appendChild(el("div", "choices " + d.type));
+          const btns = d.options.map((o, k) => {
+            const b = el("button", "choice", `<b>${"ABCDE"[k]}</b>${o.t}${o.d ? `<span>${o.d}</span>` : ""}`);
+            b.type = "button";
+            box.append(b);
+            return b;
+          });
+          const reveal = () => {
+            btns.forEach((b, k) => {
+              b.disabled = true;
+              const picked = b.classList.contains("picked");
+              if (d.options[k].ok) b.classList.add("ok");
+              else if (picked) b.classList.add("ng");
+              else b.classList.add("dim");
+            });
+            finish(d.options.every((o, k) => !!o.ok === btns[k].classList.contains("picked")));
+          };
+          if (d.type === "choice") {
+            btns.forEach((b) => (b.onclick = () => (b.classList.add("picked"), reveal())));
+          } else {
+            const check = el("button", "btn primary", "答え合わせ");
+            check.disabled = true;
+            btns.forEach((b) => (b.onclick = () => (b.classList.toggle("picked"), (check.disabled = !box.querySelector(".picked")))));
+            check.onclick = reveal;
+            actions.append(check);
+          }
+        } else {
+          const picked = [];
+          main.append(el("p", "label", "下の項目を、起きる順にタップ（並べたものをタップすると戻せます）"));
+          const slots = main.appendChild(el("ol", "slots"));
+          const pool = main.appendChild(el("div", "pool"));
+          const check = el("button", "btn primary", "答え合わせ");
+          actions.append(check);
+          const order = shuffle(d.steps.map((_, k) => k));
+          const draw = () => {
+            slots.innerHTML = "";
+            d.steps.forEach((_, k) => {
+              const s = picked[k];
+              const li = slots.appendChild(el("li", "slot" + (s != null ? " filled" : ""), `<span class="num">${k + 1}</span><span>${s != null ? d.steps[s] : ""}</span>`));
+              if (s != null) {
+                li.tabIndex = 0;
+                li.onclick = li.onkeydown = (e) => {
+                  if (e.type === "keydown" && e.key !== "Enter" && e.key !== " ") return;
+                  picked.splice(k, 1);
+                  draw();
+                };
+              }
+            });
+            pool.innerHTML = "";
+            order.filter((k) => !picked.includes(k)).forEach((k) => {
+              const c = pool.appendChild(el("button", "chip", d.steps[k]));
+              c.type = "button";
+              c.onclick = () => (picked.push(k), draw());
+            });
+            check.disabled = picked.length < d.steps.length;
+          };
+          check.onclick = () => {
+            const items = slots.querySelectorAll(".slot");
+            picked.forEach((s, k) => {
+              items[k].className = "slot " + (s === k ? "ok" : "ng");
+              items[k].onclick = items[k].onkeydown = null;
+              items[k].removeAttribute("tabindex");
+            });
+            finish(picked.every((s, k) => s === k));
+          };
+          draw();
+        }
+        main.append(actions);
+      }
+
+      addEventListener("hashchange", () => {
+        render();
+        if (innerWidth < 896) $q.scrollIntoView({ behavior: "smooth" });
+      });
+      render();
+    </script>
+  </body>
+</html>
