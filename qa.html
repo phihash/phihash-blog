@@ -50,6 +50,66 @@
     <h2>Docker</h2>
 
     <details>
+      <summary>コンテナの正体は、ホストから見ると何？</summary>
+      <p>分離されたプロセス。ホストとは同じカーネルを共有している。</p>
+    </details>
+
+    <details>
+      <summary>Docker はコンテナの起動時に何を作る？</summary>
+      <p>namespace と cgroup。namespace は見える範囲を分け、cgroup は使える量を制限する。</p>
+    </details>
+
+    <details>
+      <summary>namespace は何を分ける？</summary>
+      <p>PID、ネットワーク、ホスト名など。だからコンテナからホストのプロセスは見えない。</p>
+    </details>
+
+    <details>
+      <summary>コンテナの中で最初のプロセスの PID が 1 なのはなぜ？</summary>
+      <p>PID は namespace ごとに 1 から数えるから。同じプロセスが、Linux ホストの <code>ps</code> では別の番号で見える。Mac の Docker Desktop は Linux の VM の中でコンテナを動かすので、Mac の <code>ps</code> には出ない。</p>
+    </details>
+
+    <details>
+      <summary>cgroup は何を決める？</summary>
+      <p>プロセスのまとまりごとの、メモリや CPU の上限。</p>
+    </details>
+
+    <details>
+      <summary>イメージとは何？</summary>
+      <p>イメージレイヤー（読み取り専用）を重ねたもの。</p>
+    </details>
+
+    <details>
+      <summary>コンテナをつくると、イメージの上に何が加わる？</summary>
+      <p>コンテナレイヤー（書き込み可能）。同じイメージから作ったコンテナはイメージレイヤー（読み取り専用）を共有し、コンテナごとに別なのはコンテナレイヤー（書き込み可能）だけ。</p>
+    </details>
+
+    <details>
+      <summary>コンテナの中でイメージのファイルを書き換えると、どうなる？</summary>
+      <p>そのファイルをコンテナレイヤー（書き込み可能）にコピーしてから変更する（コピーオンライト）。イメージ自体は変わらない。</p>
+    </details>
+
+    <details>
+      <summary><code>docker stop</code> で止めると、書き込んだデータはどうなる？</summary>
+      <p>コンテナレイヤー（書き込み可能）ごと残る。<code>docker start</code> で再開すれば、そのまま使える。</p>
+    </details>
+
+    <details>
+      <summary><code>docker rm</code> で削除すると、書き込んだデータはどうなる？</summary>
+      <p>コンテナレイヤー（書き込み可能）ごと消える。残したいデータは、レイヤーの外にあるボリュームに置く。</p>
+    </details>
+
+    <details>
+      <summary>ボリュームとは何？</summary>
+      <p>Docker が管理する、ホスト上の保存場所。コンテナを削除しても残り、新しいコンテナでもそのまま使える。</p>
+    </details>
+
+    <details>
+      <summary>ボリュームを消すには？</summary>
+      <p><code>docker volume rm</code>。<code>docker rm</code> でコンテナを消しても、名前付きボリュームは消えない。</p>
+    </details>
+
+    <details>
       <summary>コンテナのメモリ上限を見張っている仕組みは？</summary>
       <p>cgroup。プロセスのまとまりごとにリソースを制限する Linux カーネルの仕組み。</p>
     </details>
@@ -66,7 +126,7 @@
 
     <details>
       <summary>137 が OOM かどうかの確かめ方は？</summary>
-      <p><code>docker inspect</code> の <code>OOMKilled</code> が true か見る。</p>
+      <p><code>docker inspect -f '{{.State.OOMKilled}}' コンテナ名</code> が true か見る。</p>
     </details>
 
     <details>
